@@ -1,0 +1,9 @@
+# The repository ships source only — no build output is committed — so
+# Netlify must build the site and publish dist/. This file overrides any
+# build settings configured in the Netlify UI.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
