@@ -1,0 +1,268 @@
+@import 'tailwindcss';
+
+/* ----------------------------------------------------------------------------
+   Design tokens
+   ------------------------------------------------------------------------- */
+:root {
+  --ink: #2b2d31;
+  --ink-soft: #4a4d54;
+  --ink-faint: #8b8e96;
+  --paper: #f7f7f5;
+  --paper-pure: #ffffff;
+  --line: rgba(43, 45, 49, 0.1);
+
+  --pastel-sky: #cfe4f7;
+  --pastel-lavender: #ded6f7;
+  --pastel-blush: #f8dfe6;
+  --pastel-peach: #fadfd0;
+  --pastel-sun: #fbf0cf;
+  --pastel-mint: #d6efe2;
+
+  /* Composition scale: the reference artboard is 1536px wide. */
+  --artboard: 1536;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ----------------------------------------------------------------------------
+   Type families
+   ------------------------------------------------------------------------- */
+/* The oversized name shares the wordmark's typeface, so the identity reads as
+   one system from the logo all the way up to the architectural scale. */
+.font-display {
+  font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+
+.font-editorial {
+  font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif;
+}
+
+/* The heavy condensed grotesque of section 04's headline. */
+.font-heavy {
+  font-family: 'Anton', 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.font-ui {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.label {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}
+
+/* ----------------------------------------------------------------------------
+   Surfaces
+   ------------------------------------------------------------------------- */
+.card-surface {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 1px 2px rgba(31, 33, 38, 0.04),
+    0 12px 30px -12px rgba(31, 33, 38, 0.18),
+    0 2px 6px rgba(31, 33, 38, 0.03);
+}
+
+/* Cards size their own type: everything inside is expressed in `cqw`, so a
+   card's text scales with the card rather than with the page. */
+.cq {
+  container-type: inline-size;
+}
+
+/* Depth on hover — the shadow lifts, the card does not shout. */
+.lift {
+  transition: box-shadow 550ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.floating-card:hover .lift {
+  box-shadow:
+    0 4px 10px rgba(31, 33, 38, 0.05),
+    0 34px 60px -24px rgba(31, 33, 38, 0.32);
+}
+
+.card-media {
+  box-shadow:
+    0 2px 4px rgba(31, 33, 38, 0.05),
+    0 18px 40px -16px rgba(31, 33, 38, 0.28);
+  border: 4px solid #ffffff;
+}
+
+/* ----------------------------------------------------------------------------
+   Floating motion — each card gets one variant with its own duration + delay.
+   Amplitudes are small on purpose: the cards drift inside their own lane and
+   never travel far enough to reach a neighbour. Floating gallery, not chaos.
+   ------------------------------------------------------------------------- */
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(3px, -8px, 0) rotate(0.45deg);
+  }
+}
+
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(-4px, -5px, 0) rotate(-0.4deg);
+  }
+  66% {
+    transform: translate3d(2px, -9px, 0) rotate(0.3deg);
+  }
+}
+
+@keyframes float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-3px, 7px, 0) rotate(-0.5deg);
+  }
+}
+
+@keyframes float-d {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(4px, 5px, 0) rotate(0.28deg);
+  }
+  75% {
+    transform: translate3d(-2px, -7px, 0) rotate(-0.34deg);
+  }
+}
+
+.float-a {
+  animation: float-a var(--float-duration, 9s) ease-in-out var(--float-delay, 0s) infinite;
+}
+.float-b {
+  animation: float-b var(--float-duration, 11s) ease-in-out var(--float-delay, 0s) infinite;
+}
+.float-c {
+  animation: float-c var(--float-duration, 10s) ease-in-out var(--float-delay, 0s) infinite;
+}
+.float-d {
+  animation: float-d var(--float-duration, 12s) ease-in-out var(--float-delay, 0s) infinite;
+}
+
+/* Wing beat — both wings fold toward the body line, which sits on the centre
+   of the sprite, so a scaleX about 50% folds the pair correctly.
+
+   The animation runs on the WHOLE <svg> element, not on groups inside it:
+   animating SVG interior transforms forces the browser to repaint the vector
+   every frame, and twenty butterflies repainting forever was a standing GPU
+   cost that starved video decoding. A transform on the svg element itself is
+   compositor-only — zero repaint. The hind pair trails the fore pair by a
+   fraction of a beat, which is what makes it read as a wing-beat. */
+@keyframes wing-fold {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.36);
+  }
+}
+
+.wing-fold {
+  transform-origin: 50% 50%;
+  animation: wing-fold var(--flap, 0.9s) ease-in-out infinite;
+  will-change: transform;
+}
+
+.wing-fold-hind {
+  animation-delay: calc(var(--flap, 0.9s) * 0.09);
+}
+
+/* A photographic butterfly gets the same beat, faked with a gentle squeeze. */
+@keyframes wing-photo {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.82) scaleY(1.02);
+  }
+}
+
+.wing-photo {
+  animation: wing-photo var(--flap, 0.9s) ease-in-out infinite;
+}
+
+/* Waveform bars inside the “currently playing” card. */
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.wave-bar {
+  transform-origin: center;
+  animation: wave var(--wave-duration, 1.2s) ease-in-out var(--wave-delay, 0s) infinite;
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(7px);
+    opacity: 0;
+  }
+}
+
+.scroll-dot {
+  animation: scroll-dot 1.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-a,
+  .float-b,
+  .float-c,
+  .float-d,
+  .wing-fold,
+  .wing-photo,
+  .wave-bar,
+  .scroll-dot {
+    animation: none !important;
+  }
+}

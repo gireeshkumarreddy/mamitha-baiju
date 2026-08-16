@@ -1,0 +1,19 @@
+# dependencies / build output
+node_modules
+dist
+.vite
+*.tsbuildinfo
+
+# local tooling
+.claude/
+*.local
+.DS_Store
+
+# original source photographs & footage (root only — public/ ships).
+# The site runs entirely from public/; these feed the video:* encode scripts.
+/*.jpg
+/*.jpeg
+/*.png
+/*.avif
+/*.mp4
+/*.mov

@@ -1,0 +1,28 @@
+{
+  "name": "mamitha-baiju-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "video:split": "ffmpeg -y -i \"section 4 video.mp4\" -t 18 -an -c:v libx264 -preset medium -crf 19 -pix_fmt yuv420p -profile:v high -movflags +faststart public/videos/section4.mp4",
+    "video:section5": "ffmpeg -y -i \"new video section 5.mov\" -vf scale=540:-2 -an -c:v libx264 -preset medium -crf 23 -pix_fmt yuv420p -profile:v high -movflags +faststart public/videos/section5-motion.mp4"
+  },
+  "dependencies": {
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11"
+  }
+}
